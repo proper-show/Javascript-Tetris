@@ -1,0 +1,80 @@
+.wrapper{
+    background-color: black;
+}
+.game {
+    color: rgb(81, 255, 12);
+    
+}
+.header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+.game-area {
+    display: flex;
+    padding: 4rem;
+}
+
+.scoreboard{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 7rem;
+    align-items: center;
+    text-align: center;
+}
+
+.buttons {
+    display: flex; 
+    flex-direction: column;
+    width: 25%;
+}
+.game-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background-color: black;
+    height: 705px;
+    width: 470px;
+}
+
+.sq {
+    background-color: red;
+}
+
+.t {
+    background-color: blue;
+}
+
+.l {
+    background-color: yellow;
+}
+
+.z {
+    background-color: GREEN;
+}
+
+.S {
+    background-color: orange
+}
+
+.i {
+    background-color: white;
+}
+
+.cell {
+    border: 1px  solid greenyellow;
+    width: 45px;
+    height: 45px;
+    padding: 0;
+    margin: 0;
+    
+}
+
+.game-peice{
+    background-color: greenyellow;
+}
