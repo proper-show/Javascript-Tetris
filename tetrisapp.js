@@ -33,10 +33,10 @@ const gamePieces = {
     }, 
     s: {
         id: 's',
-        a: 10,
-        b: 11,
-        c: 1,
-        d: 2,
+        a: 1,
+        b: 2,
+        c: 11,
+        d: 10,
         color: 'orange'
     },
     i: {
@@ -57,123 +57,131 @@ function createNewPeice(data) {
     let nextPiece = gamePiecesArray[randomNumber]
     switch (nextPiece) {
         case 'sq': 
-            sq.renderShape()
+            renderShape(gamePieces.sq)
             break;
         case 't':
-            t.renderShape()
+            renderShape(gamePieces.t)
             break;
         case 'l':
-            l.renderShape()
+            renderShape(gamePieces.l)
             break;
         case 'z':
-            z.renderShape()
+            renderShape(gamePieces.z)
             break;
         case 's':
-            s.renderShape()
+            renderShape(gamePieces.s)
             break;
         case 'i':
-            i.renderShape()
+            renderShape(gamePieces.i)
             break;
     }
 }
 
-class Grid {
-    constructor(data) {
-        Object.assign(this, data)
 
-        this.gridWidth = 10
-        this.gridHeight = 15
-        this.gridTotal = this.gridWidth * this.gridHeight
-        this.gridArea = document.getElementById('game-grid')
-        this.cellsArray = this.createCellArray()
-    }
+    const gridWidth = 10
+    const gridHeight = 15
+    const gridTotal = gridWidth * gridHeight
+    const gridArea = document.getElementById('game-grid')
+    const cellsArray = createCellArray()
+    
 
-    createCellArray() {
-        return new Array(this.gridTotal).fill(0).map(()=> {
+    function createCellArray() {
+        return new Array(gridTotal).fill(0).map(()=> {
                 let cell = document.createElement('div')
                 cell.setAttribute('class', 'cell')
                 return cell     
         })
     }
 
-    renderGrid() {
-            for(let i = 0; i < this.gridTotal; i++) {         // creates grid         
-                this.gridArea.appendChild(this.cellsArray[i])
+    function render() {
+        Object.assign(this, data)
+        
+            for(let i = 0; i < gridTotal; i++) {         // creates grid         
+                gridArea.appendChild(cellsArray[i])
             }  
-    }
-
-   
-    renderShape() {
-        let {id, a, b, c, d, cellsArray} = this
-        this.clearGrid()
-     
-        cellsArray[a].classList.add(id)
-        cellsArray[b].classList.add(id)
-        cellsArray[c].classList.add(id)
-        cellsArray[d].classList.add(id)
-        
-        this.renderGrid()
-        this.moveDown()
-    }
-
-    moveDown() {
-        let {a, b, c, d} = this
-        
-        setInterval(() => {
-            a + 10
-            b + 10
-            c + 10
-            d + 10
-            console.log(a)
-            this.renderShape()
-        }, 700)
-    }
     
-    moveRight() {
-        let {a, b, c, d, cellsArray} = this
-        a++
-        b++
-        c++
-        d++
-        console.log(a)
-        for(let i = 0; i < 4; i++) {
-            const pieceIndexArray = [a, b, c, d]
-            cellsArray[pieceIndexArray[i]].classList.add('dark')
+    
+        function renderShape(data) {
+           
+
+            cellsArray[a].classList.add(id)
+            cellsArray[b].classList.add(id)
+            cellsArray[c].classList.add(id)
+            cellsArray[d].classList.add(id)
+            moveDown(a, b, c, d, id)
         }
+
+        function moveDown(a, b, c, d, id) {
+            let w = a
+            let x = b
+            let y = c
+            let z = d
+
+            const downInterval = setInterval(() => {
+                cellsArray[w].classList.remove(id)
+                cellsArray[x].classList.remove(id)
+                cellsArray[y].classList.remove(id)
+                cellsArray[z].classList.remove(id)
+
+                w += 10
+                x += 10
+                y += 10
+                z += 10
+
+                modifyShapeLocation(w, x, y, z, id)
+
+                if(z > 139) {
+                    clearInterval(downInterval)
+                    createNewPeice(gamePiecesArray)
+                }
+
+                return {
+                    w
+                }
+            },700)
+        }
+
+
+        function modifyShapeLocation(w, x, y, z, id) {
+            moveRight(w, x, y, z)
+            // moveLeft(w, x, y, z)
+            let e = w
+            let f = x
+            let g = y
+            let h = z
+            cellsArray[e].classList.add(id)
+            cellsArray[f].classList.add(id)
+            cellsArray[g].classList.add(id)
+            cellsArray[h].classList.add(id)
+        }
+        
+        function moveRight(w, x, y, z) {
+            document.addEventListener('keypress', (event) => {
+                if(event.code == 'KeyD') {
+                    w++
+                    x++
+                    y++
+                    z++
+                    modifyShapeLocation(w, x, y, z)
+                }
+            })
+            
+        }
+
+        // function moveLeft() {
+
+        // }
 
     }
 
-    clearGrid() {
-        while(this.gridArea.lastElementChild) {
-            this.gridArea.removeChild(this.gridArea.lastElementChild)
+    function clearGrid() {
+        while(gridArea.lastElementChild) {
+            gridArea.removeChild(gridArea.lastElementChild)
         }
     }
-}
-
-
-const grid = new Grid()
-
 
 document.querySelector('.start-button').addEventListener('click', () => {
      createNewPeice(gamePiecesArray)
-    // grid.renderShape/()
+     render()
+    
 })
-
-document.addEventListener('keypress', (event) => {
-    if(event.code == 'KeyD') {
-        grid.moveRight()
-        console.log('right')
-    }
-})
-
-
-const sq = new Grid (gamePieces.sq)
-const t = new Grid(gamePieces.t)
-const l = new Grid(gamePieces.l)
-const z = new Grid(gamePieces.z)
-const s = new Grid(gamePieces.s)
-const i = new Grid(gamePieces.i)
-
-grid.renderGrid()
-
-
