@@ -1,187 +1,150 @@
-const gamePieces = {
-    sq: {
-        id: 'sq',                              
-        a: 0,
-        b: 1,               
-        c: 10,
-        d: 11,              
-        color: 'red'
-    },
-    t: {
-        id: 't',
-        a: 0,
-        b: 1,
-        c: 2,
-        d: 11,
-        color: 'blue'
-    },
-    l: {
-        id: 'l',
-        a: 0,
-        b: 10,
-        c: 20,
-        d: 21,
-        color: 'yellow'
-    },
-    z: {
-        id: 'z',
-        a: 0,
-        b: 1,
-        c: 11,
-        d: 12,
-        color: 'green'
-    }, 
-    s: {
-        id: 's',
-        a: 1,
-        b: 2,
-        c: 11,
-        d: 10,
-        color: 'orange'
-    },
-    i: {
-        id: 'i',
-        a: 0,
-        b: 10,
-        c: 20,
-        d: 30,
-        color: 'white'
-    }
-}
-
-gamePiecesArray = ['sq', 't', 'l', 'z', 's', 'i']
-
-function createNewPeice(data) {
-    let randomNumber  = Math.floor(Math.random() * 6) 
-    let gamePiecesArray = data
-    let nextPiece = gamePiecesArray[randomNumber]
-    switch (nextPiece) {
-        case 'sq': 
-            renderShape(gamePieces.sq)
-            break;
-        case 't':
-            renderShape(gamePieces.t)
-            break;
-        case 'l':
-            renderShape(gamePieces.l)
-            break;
-        case 'z':
-            renderShape(gamePieces.z)
-            break;
-        case 's':
-            renderShape(gamePieces.s)
-            break;
-        case 'i':
-            renderShape(gamePieces.i)
-            break;
-    }
-}
-
-
-    const gridWidth = 10
-    const gridHeight = 15
-    const gridTotal = gridWidth * gridHeight
+document.addEventListener('DOMContentLoaded', function () {
     const gridArea = document.getElementById('game-grid')
-    const cellsArray = createCellArray()
+    const GRID_WIDTH = 20
+    const GRID_HEIGHT = 30
+    const GRID_TOTAL = GRID_WIDTH * GRID_HEIGHT
+    const cellArray = createCellArray()
+    
+
+    const sq = [
+        [1, 2, GRID_WIDTH + 1, GRID_WIDTH + 2],
+        [1, 2, GRID_WIDTH + 1, GRID_WIDTH + 2],
+        [1, 2, GRID_WIDTH + 1, GRID_WIDTH + 2],
+        [1, 2, GRID_WIDTH + 1, GRID_WIDTH + 2]
+    ]
+
+    const l = [
+        [1, GRID_WIDTH + 1, (GRID_WIDTH * 2) + 1, (GRID_WIDTH * 3) + 1],
+        [GRID_WIDTH + 1, GRID_WIDTH + 2, GRID_WIDTH + 3, GRID_WIDTH + 4],
+        [1, GRID_WIDTH + 1, (GRID_WIDTH * 2) + 1, (GRID_WIDTH * 3) + 1],
+        [GRID_WIDTH + 1, GRID_WIDTH + 2, GRID_WIDTH + 3, GRID_WIDTH + 4]
+    ]
+
+    const t = [
+        [1, 2, 3, GRID_WIDTH + 2],
+        [1, GRID_WIDTH + 1, (GRID_WIDTH * 2) + 1, GRID_WIDTH + 2],
+        [GRID_WIDTH + 1, GRID_WIDTH + 2, GRID_WIDTH + 3, (GRID_WIDTH * 2) + 2],
+        [2, GRID_WIDTH + 2, (GRID_WIDTH * 2) + 2, GRID_WIDTH + 1]
+    ]
+
+    const s = [
+        [2, 3, GRID_WIDTH + 1, GRID_WIDTH + 2],
+        [2, GRID_WIDTH + 2, GRID_WIDTH + 1, (GRID_WIDTH * 2) + 1],
+        [GRID_WIDTH + 2, GRID_WIDTH + 3, (GRID_WIDTH * 2) + 1, (GRID_WIDTH * 2) + 2],
+        [(GRID_WIDTH * 2) + 3, GRID_WIDTH + 3, GRID_WIDTH + 2, 2]
+    ]
+
+    const z = [
+        [1, 2, GRID_WIDTH + 2, GRID_WIDTH + 3],
+        [3, GRID_WIDTH + 3, GRID_WIDTH + 2, (GRID_WIDTH * 2) + 2],
+        [(GRID_WIDTH * 2) + 3, (GRID_WIDTH * 2) + 2, GRID_WIDTH + 2, GRID_WIDTH + 1],
+        [3, GRID_WIDTH + 3, GRID_WIDTH + 2, (GRID_WIDTH * 2) + 2],
+    ]
+
+    const i = [
+        [1, GRID_WIDTH + 1, (GRID_WIDTH * 2) + 1, (GRID_WIDTH * 3) + 1],
+        [GRID_WIDTH + 1, GRID_WIDTH + 2, GRID_WIDTH + 3, GRID_WIDTH + 4],
+        [1, GRID_WIDTH + 1, (GRID_WIDTH * 2) + 1, (GRID_WIDTH * 3) + 1],
+        [GRID_WIDTH + 1, GRID_WIDTH + 2, GRID_WIDTH + 3, GRID_WIDTH + 4]
+    ]
+
+    const shapeArray = [sq, l, t, s, z, i]
+    const colorArray = ['red', 'blue', 'yellow', 'green', 'orange', 'white']
+
+    let startingPosition = 0
+    let startingShape = 0
+    let shape = shapeArray[startingShape][startingPosition]
+    let color = ''
+    
+
+    function generateInitialNumbers() {
+        startingPosition = Math.floor(Math.random() * 3) 
+        startingShape = Math.floor(Math.random() * 6)
+        color = colorArray[Math.floor(Math.random() * 6)]
+
+        
+    }
+ 
+    function createShape() {
+        for(let i = 0; i < shape.length; i++) {
+            cellArray[shape[i]].classList.add('blue')
+        }
+        cascade()
+    }
+
+    function removeClasses() {
+        for(let i = 0; i < shape.length; i++) {
+            cellArray[shape[i]].classList.remove('blue')
+        }
+    }
+
+    function moveRight() {
+        removeClasses()
+        for(let i = 0; i < shape.length; i++) {
+            shape[i]++
+            cellArray[shape[i]].classList.add('blue')
+        }
+    }
+
+    function moveLeft() {
+        removeClasses() 
+        for(let i = 0; i < shape.length; i++) {
+            shape[i]--
+            cellArray[shape[i]].classList.add('blue')
+        }
+    }
+
+    function cascade() {
+        let cascadeInterval = setInterval(() => {
+            removeClasses()
+            
+            for(let i = 0; i < shape.length; i++) {
+                shape[i] = shape[i] + 20
+                cellArray[shape[i]].classList.add('blue')
+                
+                if(shape[i] > 580) {
+                    clearInterval(cascadeInterval)
+                    generateInitialNumbers()
+                    createShape()
+                }
+            }
+        }, 700)
+    }
     
 
     function createCellArray() {
-        return new Array(gridTotal).fill(0).map(()=> {
+        return new Array(GRID_TOTAL).fill(0).map(()=> {
                 let cell = document.createElement('div')
                 cell.setAttribute('class', 'cell')
                 return cell     
         })
     }
 
-    function render() {
-        Object.assign(this, data)
-        
-            for(let i = 0; i < gridTotal; i++) {         // creates grid         
-                gridArea.appendChild(cellsArray[i])
-            }  
-    
-    
-        function renderShape(data) {
-           
-
-            cellsArray[a].classList.add(id)
-            cellsArray[b].classList.add(id)
-            cellsArray[c].classList.add(id)
-            cellsArray[d].classList.add(id)
-            moveDown(a, b, c, d, id)
-        }
-
-        function moveDown(a, b, c, d, id) {
-            let w = a
-            let x = b
-            let y = c
-            let z = d
-
-            const downInterval = setInterval(() => {
-                cellsArray[w].classList.remove(id)
-                cellsArray[x].classList.remove(id)
-                cellsArray[y].classList.remove(id)
-                cellsArray[z].classList.remove(id)
-
-                w += 10
-                x += 10
-                y += 10
-                z += 10
-
-                modifyShapeLocation(w, x, y, z, id)
-
-                if(z > 139) {
-                    clearInterval(downInterval)
-                    createNewPeice(gamePiecesArray)
-                }
-
-                return {
-                    w
-                }
-            },700)
-        }
-
-
-        function modifyShapeLocation(w, x, y, z, id) {
-            moveRight(w, x, y, z)
-            // moveLeft(w, x, y, z)
-            let e = w
-            let f = x
-            let g = y
-            let h = z
-            cellsArray[e].classList.add(id)
-            cellsArray[f].classList.add(id)
-            cellsArray[g].classList.add(id)
-            cellsArray[h].classList.add(id)
-        }
-        
-        function moveRight(w, x, y, z) {
-            document.addEventListener('keypress', (event) => {
-                if(event.code == 'KeyD') {
-                    w++
-                    x++
-                    y++
-                    z++
-                    modifyShapeLocation(w, x, y, z)
-                }
-            })
-            
-        }
-
-        // function moveLeft() {
-
-        // }
-
-    }
-
-    function clearGrid() {
-        while(gridArea.lastElementChild) {
-            gridArea.removeChild(gridArea.lastElementChild)
+    function renderGrid() {
+        for(let i = 0; i <  GRID_TOTAL; i++) {
+            gridArea.appendChild(cellArray[i])
         }
     }
 
-document.querySelector('.start-button').addEventListener('click', () => {
-     createNewPeice(gamePiecesArray)
-     render()
-    
+    renderGrid()
+
+    document.addEventListener('keypress', (event) => {
+        switch(event.code) {
+            case 'KeyD':
+                moveRight()
+                break;
+            case 'KeyA':
+                moveLeft()
+                break;
+        }
+    })
+
+    document.querySelector('.start-button').addEventListener('click', () => {
+        generateInitialNumbers()
+        createShape()
+    })
+
 })
+
+
+
