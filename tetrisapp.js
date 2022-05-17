@@ -1,9 +1,9 @@
-document.addEventListener('DOMContentLoaded', function () {
+
     const gridArea = document.getElementById('game-grid')
-    const GRID_WIDTH = 20
-    const GRID_HEIGHT = 30
+    const GRID_WIDTH = 15
+    const GRID_HEIGHT = 20
     const GRID_TOTAL = GRID_WIDTH * GRID_HEIGHT
-    const cellArray = createCellArray()
+    
     
 
     const sq = [
@@ -43,75 +43,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const i = [
         [1, GRID_WIDTH + 1, (GRID_WIDTH * 2) + 1, (GRID_WIDTH * 3) + 1],
-        [GRID_WIDTH + 1, GRID_WIDTH + 2, GRID_WIDTH + 3, GRID_WIDTH + 4],
+        [1, 2, 3, 4],
         [1, GRID_WIDTH + 1, (GRID_WIDTH * 2) + 1, (GRID_WIDTH * 3) + 1],
-        [GRID_WIDTH + 1, GRID_WIDTH + 2, GRID_WIDTH + 3, GRID_WIDTH + 4]
+        [1, 2, 3, 4]
     ]
 
     const shapeArray = [sq, l, t, s, z, i]
     const colorArray = ['red', 'blue', 'yellow', 'green', 'orange', 'white']
+    const cellArray = createCellArray()
 
-    let startingPosition = 0
-    let startingShape = 0
-    let shape = shapeArray[startingShape][startingPosition]
-    let color = ''
     
-
-    function generateInitialNumbers() {
-        startingPosition = Math.floor(Math.random() * 3) 
-        startingShape = Math.floor(Math.random() * 6)
-        color = colorArray[Math.floor(Math.random() * 6)]
-
-        
-    }
- 
-    function createShape() {
-        for(let i = 0; i < shape.length; i++) {
-            cellArray[shape[i]].classList.add('blue')
-        }
-        cascade()
-    }
-
-    function removeClasses() {
-        for(let i = 0; i < shape.length; i++) {
-            cellArray[shape[i]].classList.remove('blue')
-        }
-    }
-
-    function moveRight() {
-        removeClasses()
-        for(let i = 0; i < shape.length; i++) {
-            shape[i]++
-            cellArray[shape[i]].classList.add('blue')
-        }
-    }
-
-    function moveLeft() {
-        removeClasses() 
-        for(let i = 0; i < shape.length; i++) {
-            shape[i]--
-            cellArray[shape[i]].classList.add('blue')
-        }
-    }
-
-    function cascade() {
-        let cascadeInterval = setInterval(() => {
-            removeClasses()
-            
-            for(let i = 0; i < shape.length; i++) {
-                shape[i] = shape[i] + 20
-                cellArray[shape[i]].classList.add('blue')
-                
-                if(shape[i] > 580) {
-                    clearInterval(cascadeInterval)
-                    generateInitialNumbers()
-                    createShape()
-                }
-            }
-        }, 700)
-    }
-    
-
     function createCellArray() {
         return new Array(GRID_TOTAL).fill(0).map(()=> {
                 let cell = document.createElement('div')
@@ -127,7 +68,68 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     renderGrid()
+    
+    let rotation = 0
+    let shapeIndex  = Math.floor(Math.random() * 6)
+    let currentposition = Math.floor(Math.random() * 16) + 2
+    let shape= shapeArray[shapeIndex][rotation]
 
+    function createShape() { 
+        shape.forEach((index) => {
+            cellArray[currentposition + index].classList.add('blue')
+        })
+        cascade()
+    }
+
+    function removeClasses() {
+        shape.forEach((index) => {
+            cellArray[currentposition + index].classList.remove('blue')
+        })
+    }
+
+    function moveRight() {
+        removeClasses()
+        currentposition++
+        shape.forEach((index) => {
+            cellArray[currentposition + index].classList.add('blue')
+        })
+    }
+
+    function moveLeft() {
+        removeClasses() 
+        currentposition--
+        shape.forEach((index) => {
+            cellArray[currentposition + index].classList.add('blue')
+        })
+    }
+
+    function rotateShape() {
+        removeClasses()  
+        rotation++
+       
+        if (rotation == shape.length) {
+            rotation = 0
+        }
+        shape = shapeArray[shapeIndex][rotation]
+        shape.forEach((index) => {
+            cellArray[currentposition + index].classList.add('blue')
+        }) 
+    }
+
+    function cascade() {
+        let cascadeInterval = setInterval(() => {
+            removeClasses()
+            currentposition = currentposition + GRID_WIDTH
+            
+            shape.forEach((index) => {
+                cellArray[currentposition + index].classList.add('blue')
+                if(currentposition + index >= (GRID_TOTAL - GRID_WIDTH)) {
+                    clearInterval(cascadeInterval)
+                }
+           })    
+        }, 700)
+    }
+    
     document.addEventListener('keypress', (event) => {
         switch(event.code) {
             case 'KeyD':
@@ -136,15 +138,13 @@ document.addEventListener('DOMContentLoaded', function () {
             case 'KeyA':
                 moveLeft()
                 break;
+            case 'KeyW':
+                rotateShape()
         }
     })
 
     document.querySelector('.start-button').addEventListener('click', () => {
-        generateInitialNumbers()
         createShape()
     })
-
-})
-
 
 
