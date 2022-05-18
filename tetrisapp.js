@@ -23,7 +23,7 @@
     const t = [
         [1, 2, 3, GRID_WIDTH + 2],
         [1, GRID_WIDTH + 1, (GRID_WIDTH * 2) + 1, GRID_WIDTH + 2],
-        [GRID_WIDTH + 1, GRID_WIDTH + 2, GRID_WIDTH + 3, (GRID_WIDTH * 2) + 2],
+        [GRID_WIDTH + 1, GRID_WIDTH + 2, GRID_WIDTH + 3, 2],
         [2, GRID_WIDTH + 2, (GRID_WIDTH * 2) + 2, GRID_WIDTH + 1]
     ]
 
@@ -66,15 +66,19 @@
             gridArea.appendChild(cellArray[i])
         }
     }
-
+    console.log(cellArray)
     renderGrid()
     
     let rotation = 0
-    let shapeIndex  = Math.floor(Math.random() * 6)
-    let currentposition = Math.floor(Math.random() * 16) + 2
-    let shape= shapeArray[shapeIndex][rotation]
+    let shapeIndex = ''
+    let currentposition = ''
+    let shape= []
+
 
     function createShape() { 
+        currentposition = Math.floor(Math.random() * 10) + 2
+        shapeIndex = Math.floor(Math.random() * 6)
+        shape = shapeArray[shapeIndex][rotation]
         shape.forEach((index) => {
             cellArray[currentposition + index].classList.add('blue')
         })
@@ -89,7 +93,15 @@
 
     function moveRight() {
         removeClasses()
-        currentposition++
+
+        const rightBoundry = shape.some((index) => {
+            if((currentposition + index) % GRID_WIDTH === GRID_WIDTH - 1) {  // creates the right boundry by looking through the shape for a number / 15 with a remainder of the width -
+                return true
+            }
+        })
+        if(!rightBoundry) {
+            currentposition++
+        }
         shape.forEach((index) => {
             cellArray[currentposition + index].classList.add('blue')
         })
@@ -97,10 +109,31 @@
 
     function moveLeft() {
         removeClasses() 
-        currentposition--
+        const leftBoundry = shape.some((index) => {    // creates the left boundry by looking for a number in the array that is divisable by the GRID_WIDTH
+            if((currentposition + index) % GRID_WIDTH === 0) {
+                return true
+            }})
+        if(!leftBoundry) {
+            currentposition--
+        }
         shape.forEach((index) => {
             cellArray[currentposition + index].classList.add('blue')
         })
+    }
+
+    function moveDown() {
+        const bottomBoundry = shape.some((index) => {if((currentposition + index) >= GRID_TOTAL - GRID_WIDTH){return true}})
+            if(!bottomBoundry) {
+                removeClasses()
+                currentposition = currentposition + GRID_WIDTH
+                shape.forEach((index) => {
+                    cellArray[currentposition + index].classList.add('blue')
+                })
+            } else { 
+                clearInterval(cascadeInterval)
+                terminateShape()
+            }
+       
     }
 
     function rotateShape() {
@@ -117,17 +150,24 @@
     }
 
     function cascade() {
-        let cascadeInterval = setInterval(() => {
-            removeClasses()
-            currentposition = currentposition + GRID_WIDTH
-            
-            shape.forEach((index) => {
-                cellArray[currentposition + index].classList.add('blue')
-                if(currentposition + index >= (GRID_TOTAL - GRID_WIDTH)) {
-                    clearInterval(cascadeInterval)
-                }
-           })    
+        const cascadeInterval = setInterval(() => {
+            const bottomBoundry = shape.some((index) => {if((currentposition + index) >= GRID_TOTAL - GRID_WIDTH){return true}})
+            if(!bottomBoundry) {
+                moveDown()
+            } else { 
+                clearInterval(cascadeInterval)
+                terminateShape()
+            }
         }, 700)
+      
+    }
+
+    function terminateShape() {
+        removeClasses()
+        shape.forEach((index) => {
+            cellArray[currentposition + index].classList.add('dead')
+        })
+        createShape()
     }
     
     document.addEventListener('keypress', (event) => {
@@ -140,11 +180,11 @@
                 break;
             case 'KeyW':
                 rotateShape()
+            case 'KeyS':
+                moveDown()
         }
     })
 
     document.querySelector('.start-button').addEventListener('click', () => {
         createShape()
     })
-
-
