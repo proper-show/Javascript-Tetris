@@ -38,8 +38,8 @@
     flex-direction: row;
     flex-wrap: wrap;
     background-color: black;
-    height: 800px;
-    width: 535px;
+    height: 45.625rem;
+    width: 34.375rem;
 }
 
 .red {
@@ -48,6 +48,7 @@
 
 .blue {
     background-color: blue;
+    border: 1px solid black;
 }
 
 .yellow {
@@ -67,9 +68,9 @@
 }
 
 .cell {
-    border: 1px  solid greenyellow;
-    width: 25px;
-    height: 25px;
+    border: 1px  solid rgb(85, 85, 85);
+    width: 2.1875rem;
+    height: 2.1875rem;
     padding: 0;
     margin: 0;
     
@@ -77,4 +78,8 @@
 
 .game-peice{
     background-color: greenyellow;
+}
+
+.dead {
+    background-color: brown;
 }
