@@ -76,7 +76,7 @@
 
 
     function createShape() { 
-        currentposition = Math.floor(Math.random() * 10) + 2
+        currentposition = Math.floor(Math.random() * 6) + 3
         shapeIndex = Math.floor(Math.random() * 6)
         shape = shapeArray[shapeIndex][rotation]
         shape.forEach((index) => {
@@ -94,11 +94,7 @@
     function moveRight() {
         removeClasses()
 
-        const rightBoundry = shape.some((index) => {
-            if((currentposition + index) % GRID_WIDTH === GRID_WIDTH - 1) {  // creates the right boundry by looking through the shape for a number / 15 with a remainder of the width -
-                return true
-            }
-        })
+        const rightBoundry = shape.some((index) => {if((currentposition + index) % GRID_WIDTH === GRID_WIDTH - 1) {return true}})  // creates the right boundry by looking through the shape for a number / 15 with a remainder of the width
         if(!rightBoundry) {
             currentposition++
         }
@@ -108,11 +104,8 @@
     }
 
     function moveLeft() {
-        removeClasses() 
-        const leftBoundry = shape.some((index) => {    // creates the left boundry by looking for a number in the array that is divisable by the GRID_WIDTH
-            if((currentposition + index) % GRID_WIDTH === 0) {
-                return true
-            }})
+        removeClasses()
+        const leftBoundry = shape.some((index) => {if((currentposition + index) % GRID_WIDTH === 0){return true}})
         if(!leftBoundry) {
             currentposition--
         }
@@ -122,18 +115,11 @@
     }
 
     function moveDown() {
-        const bottomBoundry = shape.some((index) => {if((currentposition + index) >= GRID_TOTAL - GRID_WIDTH){return true}})
-            if(!bottomBoundry) {
                 removeClasses()
                 currentposition = currentposition + GRID_WIDTH
                 shape.forEach((index) => {
                     cellArray[currentposition + index].classList.add('blue')
                 })
-            } else { 
-                clearInterval(cascadeInterval)
-                terminateShape()
-            }
-       
     }
 
     function rotateShape() {
@@ -151,7 +137,10 @@
 
     function cascade() {
         const cascadeInterval = setInterval(() => {
-            const bottomBoundry = shape.some((index) => {if((currentposition + index) >= GRID_TOTAL - GRID_WIDTH){return true}})
+        const bottomBoundry = shape.some((index) => {
+            if((currentposition + index) >= GRID_TOTAL - GRID_WIDTH || cellArray[currentposition + index + GRID_WIDTH].classList.contains('dead')){
+                return true
+            }}) 
             if(!bottomBoundry) {
                 moveDown()
             } else { 
@@ -176,7 +165,10 @@
                 moveRight()
                 break;
             case 'KeyA':
+                let shapeToLeft = shape.some((index) => {if(cellArray[(currentposition + index) - 1].classList.contains('dead')){return true}})
+                if(!shapeToLeft) { 
                 moveLeft()
+                }
                 break;
             case 'KeyW':
                 rotateShape()
