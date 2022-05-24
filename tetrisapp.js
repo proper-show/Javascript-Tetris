@@ -150,10 +150,33 @@ function cascade() {
         } else { 
             clearInterval(cascadeInterval)
             terminateShape()
+            checkRow()
         }
     }, 700)
     
 }
+// function makeARow() {
+//     const makeRowArray = Array.from(Array(15).keys())
+//     for(let i of makeRowArray) {
+//         cellArray[makeRowArray[i]].classList.add('dead')
+//     }
+
+// }
+
+// makeARow()
+
+function checkRow() {
+    for(let i =0; i < GRID_TOTAL; i += GRID_WIDTH) {
+        const row = [i, i+1, i+2, i+3, i+4, i+5, i+6, i+7, i+8, i+9, i+10, i+11, i+12, i+13, i+14]
+        if(row.every(index => cellArray[index].classList.contains('dead'))) {
+            row.forEach(index => cellArray[index].classList.remove('dead'))
+    
+        }
+    }
+    
+}
+
+checkRow()
 
 function terminateShape() {
     removeClasses()
@@ -164,15 +187,6 @@ function terminateShape() {
     createShape()
 }
 
-function checkRow() {
-    for(let i = 0; i < GRID_TOTAL; i += GRID_WIDTH) {
-        let row = [i, i+1, i+2, i+3, i+4, i+5, i+6, i+7, i+8, i+9, i+10, i+11, i+12, i+13, i+14]
-        let rowCheck = row.every((index) => {if(cellArray[index].classList.contains('dead')){return true}}) 
-        if(rowCheck) {
-            console.log('')
-        }
-    }
-}
 
 document.addEventListener('keypress', (event) => {
     switch(event.code) {
